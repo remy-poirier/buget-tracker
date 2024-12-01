@@ -1,45 +1,58 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import {router, Tabs} from "expo-router";
+import {Colors, Theme} from "@/constants/Colors";
+import {useColorScheme} from "@/hooks/useColorScheme";
+import {HapticTab} from "@/components/HapticTab";
+import TabBarBackground from "@/components/ui/TabBarBackground";
+import {Platform} from "react-native";
+import React from "react";
+import {IconSymbol} from "@/components/ui/IconSymbol";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import {useThemeColor} from "@/hooks/useThemeColor";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+export default function TabLayout(){
+	const colorScheme = useColorScheme();
+	const textColor = useThemeColor({}, "text")
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+	return (
+		<Tabs screenOptions={{
+			headerTintColor: Colors[colorScheme ?? 'light'].text,
+			tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+			// headerShown: false,
+			tabBarButton: HapticTab,
+			// tabBarBackground: TabBarBackground,
+			tabBarStyle: Platform.select({
+				ios: {
+					// Use a transparent background on iOS to show the blur effect
+					position: 'absolute',
+					backgroundColor: Colors[colorScheme ?? 'light'].background,
+					borderTopWidth: 0,
+					height: Theme.tabBarHeight,
+				},
+				default: {
+					height: Theme.tabBarHeight
+				},
+			}),
+			headerStyle: {
+				backgroundColor: Colors[colorScheme ?? 'light'].background,
+				borderBottomWidth: 0,
+			},
+		}}>
+			<Tabs.Screen
+				name="index"
+				options={{
+					title: "Accueil",
+					headerShown: false,
+					tabBarIcon: ({ color, focused }) => <IconSymbol size={28} name="house.fill" color={focused ? color : textColor} />,
+			}}
+			/>
+			<Tabs.Screen
+				name="transactions"
+				options={{
+					title: "Transactions",
+					headerShown: false,
+					tabBarIcon: ({ color, focused }) => <IconSymbol size={28} name="chart.line.uptrend.xyaxis" color={focused ? color : textColor} />,
+				}}
+			/>
+		</Tabs>
+	)
 }
